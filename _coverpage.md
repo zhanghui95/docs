@@ -3,7 +3,8 @@
 </p>
 <h1 align="center">Docs</h1>
 
-[GitHub]()
+[GitHub](https://github.com/zhanghui95/docs)
+[Gitee](https://gitee.com/stefan95/docs)
 [开始阅读](#docs)
 
 
