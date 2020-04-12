@@ -430,7 +430,7 @@ public class PreMainAgent {
             <descriptorRef>jar-with-dependencies</descriptorRef>
         </descriptorRefs>
         <archive>
-					<!-- 自动添加META-INF/MANIFEST.MF --> 
+          <!-- 自动添加META-INF/MANIFEST.MF --> 
           <manifest>
                 <addClasspath>true</addClasspath>
             </manifest>
@@ -490,16 +490,16 @@ public class PreMainAgent {
     AgentBuilder.Transformer transformer = new AgentBuilder.Transformer() {
             public DynamicType.Builder<?> transform(DynamicType.Builder<?>
 builder, TypeDescription typeDescription, ClassLoader classLoader, JavaModule javaModule) {
-return builder
+	return builder
 	// 拦截任意方法
-.method(ElementMatchers.<MethodDescription>any())
+	.method(ElementMatchers.<MethodDescription>any())
 	// 拦截到的方法委托给TimeInterceptor
-  .intercept(MethodDelegation.to(MyInterceptor.class));
+	.intercept(MethodDelegation.to(MyInterceptor.class));
             }
     };
     // Byte Buddy专门有个AgentBuilder来处理Java Agent的场景
     new AgentBuilder.Default()
-			// 根据包名前缀拦截类 拦截到的类由transformer处理
+    // 根据包名前缀拦截类 拦截到的类由transformer处理
      .type(ElementMatchers.nameStartsWith("com.agent")) 
      .transform(transformer).installOn(inst);
 	}
