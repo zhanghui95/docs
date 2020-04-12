@@ -162,16 +162,16 @@ Java agent是在JDK1.5引入的，是一种可以动态修改Java字节码的技
          apm-toolkit-log4j-2.x-activation.jar
          apm-toolkit-logback-1.x-activation.jar
          ...
-		//配置文件 
-		+-- config
-					agent.config
-		//组件的所有插件
+    // 配置文件 
+    +-- config
+         agent.config
+    // 组件的所有插件
     +-- plugins
          apm-dubbo-plugin.jar
          apm-feign-default-http-9.x.jar
          apm-httpClient-4.x-plugin.jar
          .....
-    //可选插件
+    // 可选插件
     +-- optional-plugins
          apm-gson-2.x-plugin.jar
          .....
@@ -330,14 +330,14 @@ Add the properties after the agent path in JVM arguments
 ```
 
 ```java
-//获取trace id，可以在RocketBot追踪中进行查询
+// 获取trace id，可以在RocketBot追踪中进行查询
 @GetMapping("/getTraceId")
 public String getTraceId() {
-  //使当前链路报错，并且提示报错信息
+  // 使当前链路报错，并且提示报错信息
   ActiveSpan.error(new RuntimeException("Test-Error-Throwable"));
-  //打印info信息
+  // 打印info信息
   ActiveSpan.info("Test-Info-Msg");
-  //打印debug信息
+  // 打印debug信息
   ActiveSpan.debug("Test-debug-Msg");
   return TraceContext.traceId();
 }
@@ -385,11 +385,11 @@ Java agent是java命令的一个参数，参数 javaagent 可以用于指定一�
 
 1. 定义一个 MANIFEST.MF 文件，必须包含 Premain-Class 选项，通常也会加入Can-Redefine- Classes 和 Can-Retransform-Classes 选项
 
-2. 创建一个Premain-Class 指定的类，类中包含 premain 方法，方法逻辑由用户自己确定
+2. 创建一个Premain-Class 指定的类，类中包含premain方法，方法逻辑由用户自己确定
 3. 将 premain 的类和 MANIFEST.MF 文件打成 jar 包
 4. 使用参数 -javaagent: jar包路径 启动要代理的方法
 
-新建项目添加P re M ai nAgent类
+新建项目添加PreMainAgent类
 
 ```java
 public class PreMainAgent {
@@ -403,7 +403,8 @@ public class PreMainAgent {
   public static void premain(String agentArgs, Instrumentation inst) {
     System.out.println("=========premain方法执行1========");
     System.out.println(agentArgs);
-                                                                     }
+  }
+  
   /**
 		* 如果不存在 premain(String agentArgs, Instrumentation inst) * 则会执行premain(String agentArgs)
 		* @param agentArgs
@@ -429,7 +430,8 @@ public class PreMainAgent {
             <descriptorRef>jar-with-dependencies</descriptorRef>
         </descriptorRefs>
         <archive>
-<!--自动添加META-INF/MANIFEST.MF --> <manifest>
+					<!-- 自动添加META-INF/MANIFEST.MF --> 
+          <manifest>
                 <addClasspath>true</addClasspath>
             </manifest>
             <manifestEntries>
@@ -459,7 +461,7 @@ public class PreMainAgent {
 
 ### 6.1 统计方法调用时间
 
-Skywalking中对每个调用的时长都进行了统计，这一小节中我们会使用ByteBuddy和Java agent技术来 统计方法的调用时长。Byte Buddy是开源的、基于Apache 2.0许可证的库，它致力于解决字节码操作和instrumentation API 的复杂性。Byte Buddy所声称的目标是将显式的字节码操作隐藏在一个类型安全的领域特定语言背 后。通过使用Byte Buddy，任何熟悉Java编程语言的人都有望非常容易地进行字节码操作。Byte Buddy提供了额外的API来生成Java agent，可以轻松的增强我们已有的代码
+Skywalking中对每个调用的时长都进行了统计，这一小节中我们会使用ByteBuddy和Java agent技术来 统计方法的调用时长。Byte Buddy是开源的、基于Apache 2.0许可证的库，它致力于解决字节码操作和instrumentation API 的复杂性。Byte Buddy所声称的目标是将显式的字节码操作隐藏在一个类型安全的领域特定语言背后。通过使用Byte Buddy，任何熟悉Java编程语言的人都有望非常容易地进行字节码操作。Byte Buddy提供了额外的API来生成Java agent，可以轻松的增强我们已有的代码
 
 添加依赖：
 
@@ -496,9 +498,8 @@ return builder
             }
     };
     // Byte Buddy专门有个AgentBuilder来处理Java Agent的场景
-   new AgentBuilder.Default()
-			// 根据包名前缀拦截类 
-      // 拦截到的类由transformer处理
+    new AgentBuilder.Default()
+			// 根据包名前缀拦截类 拦截到的类由transformer处理
      .type(ElementMatchers.nameStartsWith("com.agent")) 
      .transform(transformer).installOn(inst);
 	}
