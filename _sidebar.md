@@ -19,7 +19,8 @@
   * [Sharding-JDBC(2020.04.07)](docs/2020-04-07-Sharding-JDBC.md)
   * [SkyWalking(2020.04.09)](docs/2020-04-09-SkyWalking.md)
   * [Netty(2020.05.09)](docs/2020-05-09-Netty.md)
-  * [Kubernetes(2020.09.21)](/docs/2020-09-21-Kubernetes)
+  * [Kubernetes(2020.09.21)](/docs/2020-09-21-Kubernetes.md)
+  * [常用信息隐藏封装(2020.09.22)](/docs/2020-09-22-常用隐藏信息封装.md)
   
 * life
   
