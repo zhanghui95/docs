@@ -69,6 +69,118 @@ Worker node
 
 ## 2. k8s搭建与集群
 
+```
+平台规划
+单master集群
+多master集群
+```
+
+### 2.1 kubeadm方式
+
+```
+1. 准备三台虚拟机 centos7为例 采用NAT连接
+2. 环境准备
+ # 关闭防火墙
+ systemctl stop firewalld # 临时
+ systemctl disable firewalld # 永久
+ 
+ # 关闭selinux
+ setenforce 0 # 临时
+ sed -i 's/enforcing/disabled/' /etc/selinux/config # 永久
+ 
+ # 关闭swap
+ swapoff -a # 临时
+ sed -ri 's/.*swap.*/#&/' /etc/fstab # 永久
+ 
+ # 根据规划设置主机名
+ hostnamectl set-hostname <hostname>
+ 
+ eg：
+ hostnamectl set-hostname master
+ hostnamectl set-hostname node1
+ hostnamectl set-hostname node2
+ 
+ # 在master添加hosts
+ cat >> /etc/hosts << EOF
+ 192.168.11.1 master
+ 192.168.11.2 node1
+ 192.168.11.3 node2
+ EOF
+ 
+ # 将桥接的IPV4流量传递到iptables的链
+ cat > /etc/sysctl.d/k8s.conf << EOF
+ net.bridge.bridge-nf-call-ip6tables = 1
+ net.bridge.bridge-nf-call-iptables = 1
+ EOF
+ 
+ sysctl --system # 生效
+ 
+ # 时间同步
+ yum install ntpdate -y
+ ntpdate time.windows.com
+3. 所有节点安装docker/kubeadm/kubelet
+ 3.1 安装docker
+ wget https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo -0 /etc/yum.repos.d/docker-ce.repo
+ 
+ yum -y install docker-ce-18.06.1.ce-3.el7
+ 
+ systemctl enable docker && systemctl start docker
+ 
+ docker --version
+ 
+ cat > /etc/docker/daemon.json << EOF
+ {
+ 	"registry-mirrors":["https://b9pmyelo.mirror.aliyuncs.com"]
+ }
+ EOF
+ 
+ systemctl restart docker
+ 
+ # 设置阿里云yum软件源
+ cat > /etc/yum.repos.d/kubernetes.repo << EOF
+ [kubernetes]
+ name=Kubernetes
+ baseurl=https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64
+ enable=1
+ gpgcheck=0
+ repo_gpgcheck=0
+ gpgkey=https://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg https://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg
+ EOF
+ 
+ 3.2 安装kubeadm kubelet kubectl
+ 由于版本更新频繁，这里制定版本号部署
+ yum install -y kubelet-1.18.0 kubeadm-1.18.0 kubectl-1.18.0
+ 
+ systemctl enable kubelet
+
+4. 部署kubernetes master
+ kubeadm init \
+ -- apiserver-advertise-address=192.168.10.1 \
+ --image-repository registry.aliyuncs.com/google_containers \
+ -- kubernetes-version v1.18.0 \
+ --service-cidr=10.96.0.0/12 \
+ --pod-network-cidr=10.244.0.0/16
+ 
+ 成功后会给出添加节点的命令提示 复制在其他节点执行，token有效期为24小时 过期后可用下面命令
+ kubeadm token create --print-join-command
+ 
+ 部署CNI网络插件
+ wget https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+ 
+ 默认景象地址无法访问，sed命令修改为docker hub镜像仓库
+ kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+ 
+ kubectl get pods -n kube-system
+ 
+ 测试集群，在集群中创建一个pod验证是否正常运行
+ kubectl create deployment nginx --image=nginx
+ kubectl expose deployment nginx --port=80 --type=NodePort
+ kubectl get pod,svc
+ 访问地址：http://node ip:port
+```
+
+### 2.2 二进制方式
+
 
 
 
