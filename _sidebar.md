@@ -19,9 +19,9 @@
   * [Sharding-JDBC(2020.04.07)](docs/2020-04-07-Sharding-JDBC.md)
   * [SkyWalking(2020.04.09)](docs/2020-04-09-SkyWalking.md)
   * [Netty(2020.05.09)](docs/2020-05-09-Netty.md)
-  * [Kubernetes(2020.09.21)](/docs/2020-09-21-Kubernetes.md)
-  * [常用敏感信息隐藏封装(2020.09.22)](/docs/2020-09-22-常用敏感信息隐藏封装.md)
-  * [获取硬件属性 API(2021.01.18)](/docs/2021-01-18获取硬件属性 API.md)
+  * [Kubernetes(2020.09.21)](docs/2020-09-21-Kubernetes.md)
+  * [常用敏感信息隐藏封装(2020.09.22)](docs/2020-09-22-常用敏感信息隐藏封装.md)
+  * [获取硬件属性 API(2021.01.18)](docs/2021-01-18获取硬件属性API.md)
   
 * life
   
